@@ -43,15 +43,15 @@ const Reports = () => {
   if (loading) return <Loading />
   if (error) return <Error message={error} onRetry={loadReportData} />
 
-  // Calculate metrics
+// Calculate metrics
   const totalPatients = data.patients.length
   const totalAppointments = data.appointments.length
-  const completedAppointments = data.appointments.filter(apt => apt.status === "completed").length
-  const cancelledAppointments = data.appointments.filter(apt => apt.status === "cancelled").length
+  const completedAppointments = data.appointments.filter(apt => (apt.Status_c || apt.status) === "completed").length
+  const cancelledAppointments = data.appointments.filter(apt => (apt.Status_c || apt.status) === "cancelled").length
   
   const totalBeds = data.beds.length
-  const occupiedBeds = data.beds.filter(bed => bed.status === "occupied").length
-  const availableBeds = data.beds.filter(bed => bed.status === "available").length
+  const occupiedBeds = data.beds.filter(bed => (bed.Status_c || bed.status) === "occupied").length
+  const availableBeds = data.beds.filter(bed => (bed.Status_c || bed.status) === "available").length
   const occupancyRate = totalBeds > 0 ? Math.round((occupiedBeds / totalBeds) * 100) : 0
 
   // Chart data for appointments over time
@@ -75,14 +75,14 @@ const Reports = () => {
     }
   }
 
-  const appointmentChartSeries = [
+const appointmentChartSeries = [
     {
       name: 'Scheduled',
       data: Array.from({ length: dateRange }, (_, i) => {
         const date = subDays(new Date(), dateRange - 1 - i)
         return data.appointments.filter(apt => 
-          new Date(apt.dateTime) >= startOfDay(date) && 
-          new Date(apt.dateTime) <= endOfDay(date)
+          new Date(apt.DateTime_c || apt.dateTime) >= startOfDay(date) && 
+          new Date(apt.DateTime_c || apt.dateTime) <= endOfDay(date)
         ).length
       })
     },
@@ -91,9 +91,9 @@ const Reports = () => {
       data: Array.from({ length: dateRange }, (_, i) => {
         const date = subDays(new Date(), dateRange - 1 - i)
         return data.appointments.filter(apt => 
-          apt.status === "completed" &&
-          new Date(apt.dateTime) >= startOfDay(date) && 
-          new Date(apt.dateTime) <= endOfDay(date)
+          (apt.Status_c || apt.status) === "completed" &&
+          new Date(apt.DateTime_c || apt.dateTime) >= startOfDay(date) && 
+          new Date(apt.DateTime_c || apt.dateTime) <= endOfDay(date)
         ).length
       })
     },
@@ -102,9 +102,9 @@ const Reports = () => {
       data: Array.from({ length: dateRange }, (_, i) => {
         const date = subDays(new Date(), dateRange - 1 - i)
         return data.appointments.filter(apt => 
-          apt.status === "cancelled" &&
-          new Date(apt.dateTime) >= startOfDay(date) && 
-          new Date(apt.dateTime) <= endOfDay(date)
+          (apt.Status_c || apt.status) === "cancelled" &&
+          new Date(apt.DateTime_c || apt.dateTime) >= startOfDay(date) && 
+          new Date(apt.DateTime_c || apt.dateTime) <= endOfDay(date)
         ).length
       })
     }
@@ -124,10 +124,10 @@ const Reports = () => {
   }
 
   const bedChartSeries = [
-    data.beds.filter(bed => bed.status === "available").length,
-    data.beds.filter(bed => bed.status === "occupied").length,
-    data.beds.filter(bed => bed.status === "cleaning").length,
-    data.beds.filter(bed => bed.status === "maintenance").length
+data.beds.filter(bed => (bed.Status_c || bed.status) === "available").length,
+    data.beds.filter(bed => (bed.Status_c || bed.status) === "occupied").length,
+    data.beds.filter(bed => (bed.Status_c || bed.status) === "cleaning").length,
+    data.beds.filter(bed => (bed.Status_c || bed.status) === "maintenance").length
   ]
 
   return (

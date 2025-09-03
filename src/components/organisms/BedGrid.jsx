@@ -44,15 +44,15 @@ const BedGrid = ({ onBedAction }) => {
     loadData()
   }, [])
 
-  const getPatientName = (patientId) => {
+const getPatientName = (patientId) => {
     if (!patientId) return null
     const patient = patients.find(p => p.Id === parseInt(patientId))
-    return patient ? patient.name : "Unknown Patient"
+    return patient ? (patient.Name_c || patient.name) : "Unknown Patient"
   }
 
   const getWardBeds = () => {
     if (!selectedWard) return []
-    return beds.filter(bed => bed.wardId === parseInt(selectedWard))
+return beds.filter(bed => (bed.WardId_c || bed.wardId) === parseInt(selectedWard))
   }
 
   const getOccupancyStats = () => {
@@ -93,8 +93,8 @@ const BedGrid = ({ onBedAction }) => {
             onChange={(e) => setSelectedWard(e.target.value)}
             className="px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
           >
-            {wards.map(ward => (
-              <option key={ward.Id} value={ward.Id}>{ward.name}</option>
+{wards.map(ward => (
+              <option key={ward.Id} value={ward.Id}>{ward.Name_c || ward.name}</option>
             ))}
           </select>
         </div>
@@ -129,9 +129,9 @@ const BedGrid = ({ onBedAction }) => {
         <div className="glass-card p-6 rounded-xl">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-xl font-semibold text-slate-900">{selectedWardData.name}</h3>
+<h3 className="text-xl font-semibold text-slate-900">{selectedWardData.Name_c || selectedWardData.name}</h3>
               <p className="text-slate-600">
-                Floor {selectedWardData.floor} • {selectedWardData.type} • {stats.total} beds
+                Floor {selectedWardData.Floor_c || selectedWardData.floor} • {selectedWardData.Type_c || selectedWardData.type} • {stats.total} beds
               </p>
             </div>
             <div className="text-right">
@@ -163,8 +163,8 @@ const BedGrid = ({ onBedAction }) => {
           <h3 className="text-lg font-semibold text-slate-900 mb-6">Bed Layout</h3>
           
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {wardBeds.map((bed) => {
-              const patientName = getPatientName(bed.patientId)
+{wardBeds.map((bed) => {
+              const patientName = getPatientName(bed.PatientId_c || bed.patientId)
               
               return (
                 <div
@@ -197,9 +197,9 @@ const BedGrid = ({ onBedAction }) => {
                     
                     <div>
                       <div className="font-semibold text-slate-900">
-                        Bed {bed.bedNumber}
+Bed {bed.BedNumber_c || bed.bedNumber}
                       </div>
-                      <StatusIndicator status={bed.status} showIcon={false} />
+                      <StatusIndicator status={bed.Status_c || bed.status} showIcon={false} />
                     </div>
                     
                     {patientName && (

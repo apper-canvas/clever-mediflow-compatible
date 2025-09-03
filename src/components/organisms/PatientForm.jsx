@@ -9,18 +9,24 @@ import { patientService } from "@/services/api/patientService"
 import { toast } from "react-toastify"
 
 const PatientForm = ({ patient, onSave, onCancel }) => {
-  const [formData, setFormData] = useState({
-    name: patient?.name || "",
-    dateOfBirth: patient?.dateOfBirth || "",
-    gender: patient?.gender || "",
-    phone: patient?.phone || "",
-    email: patient?.email || "",
-    address: patient?.address || "",
-    bloodType: patient?.bloodType || "",
-    allergies: patient?.allergies?.join(", ") || "",
-    emergencyContactName: patient?.emergencyContact?.name || "",
-    emergencyContactPhone: patient?.emergencyContact?.phone || "",
-    medicalHistory: patient?.medicalHistory?.join(", ") || ""
+const [formData, setFormData] = useState({
+    name: patient?.Name_c || patient?.name || "",
+    dateOfBirth: patient?.DateOfBirth_c || patient?.dateOfBirth || "",
+    gender: patient?.Gender_c || patient?.gender || "",
+    phone: patient?.Phone_c || patient?.phone || "",
+    email: patient?.Email_c || patient?.email || "",
+    address: patient?.Address_c || patient?.address || "",
+    bloodType: patient?.BloodType_c || patient?.bloodType || "",
+    allergies: (patient?.Allergies_c || patient?.allergies) ? 
+      (Array.isArray(patient?.Allergies_c || patient?.allergies) 
+        ? (patient?.Allergies_c || patient?.allergies).join(", ") 
+        : (patient?.Allergies_c || patient?.allergies)) : "",
+    emergencyContactName: patient?.EmergencyContactName_c || patient?.emergencyContact?.name || "",
+    emergencyContactPhone: patient?.EmergencyContactPhone_c || patient?.emergencyContact?.phone || "",
+    medicalHistory: (patient?.MedicalHistory_c || patient?.medicalHistory) ?
+      (Array.isArray(patient?.MedicalHistory_c || patient?.medicalHistory)
+        ? (patient?.MedicalHistory_c || patient?.medicalHistory).join(", ")
+        : (patient?.MedicalHistory_c || patient?.medicalHistory)) : ""
   })
   
   const [errors, setErrors] = useState({})

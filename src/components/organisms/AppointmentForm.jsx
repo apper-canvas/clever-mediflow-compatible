@@ -11,15 +11,15 @@ import { toast } from "react-toastify"
 import { format } from "date-fns"
 
 const AppointmentForm = ({ appointment, onSave, onCancel }) => {
-  const [formData, setFormData] = useState({
-    patientId: appointment?.patientId || "",
-    doctorId: appointment?.doctorId || "1",
-    date: appointment ? format(new Date(appointment.dateTime), "yyyy-MM-dd") : "",
-    time: appointment ? format(new Date(appointment.dateTime), "HH:mm") : "",
-    duration: appointment?.duration || 30,
-    type: appointment?.type || "",
-    status: appointment?.status || "scheduled",
-    notes: appointment?.notes || ""
+const [formData, setFormData] = useState({
+    patientId: appointment?.PatientId_c || appointment?.patientId || "",
+    doctorId: appointment?.DoctorId_c || appointment?.doctorId || "1",
+    date: appointment ? format(new Date(appointment.DateTime_c || appointment.dateTime), "yyyy-MM-dd") : "",
+    time: appointment ? format(new Date(appointment.DateTime_c || appointment.dateTime), "HH:mm") : "",
+    duration: appointment?.Duration_c || appointment?.duration || 30,
+    type: appointment?.Type_c || appointment?.type || "",
+    status: appointment?.Status_c || appointment?.status || "scheduled",
+    notes: appointment?.Notes_c || appointment?.notes || ""
   })
   
   const [patients, setPatients] = useState([])
@@ -129,8 +129,8 @@ const AppointmentForm = ({ appointment, onSave, onCancel }) => {
               disabled={loadingPatients}
             >
               <option value="">Select patient</option>
-              {patients.map(patient => (
-                <option key={patient.Id} value={patient.Id}>{patient.name}</option>
+{patients.map(patient => (
+                <option key={patient.Id} value={patient.Id}>{patient.Name_c || patient.name}</option>
               ))}
             </Select>
           </FormField>

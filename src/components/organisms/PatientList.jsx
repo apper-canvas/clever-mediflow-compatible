@@ -1,13 +1,12 @@
-import { useState, useEffect } from "react"
-import ApperIcon from "@/components/ApperIcon"
-import Button from "@/components/atoms/Button"
-import SearchBar from "@/components/molecules/SearchBar"
-import Loading from "@/components/ui/Loading"
-import Error from "@/components/ui/Error"
-import Empty from "@/components/ui/Empty"
-import { patientService } from "@/services/api/patientService"
-import { format } from "date-fns"
-
+import React, { useEffect, useState } from "react";
+import { patientService } from "@/services/api/patientService";
+import { format } from "date-fns";
+import ApperIcon from "@/components/ApperIcon";
+import SearchBar from "@/components/molecules/SearchBar";
+import Error from "@/components/ui/Error";
+import Empty from "@/components/ui/Empty";
+import Loading from "@/components/ui/Loading";
+import Button from "@/components/atoms/Button";
 const PatientList = ({ onSelectPatient, onAddPatient }) => {
   const [patients, setPatients] = useState([])
   const [filteredPatients, setFilteredPatients] = useState([])
@@ -37,10 +36,10 @@ const PatientList = ({ onSelectPatient, onAddPatient }) => {
     if (searchTerm.trim() === "") {
       setFilteredPatients(patients)
     } else {
-      const filtered = patients.filter(patient =>
-        patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        patient.phone.includes(searchTerm) ||
-        patient.email.toLowerCase().includes(searchTerm.toLowerCase())
+const filtered = patients.filter(patient =>
+        (patient.Name_c || patient.name).toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (patient.Phone_c || patient.phone).includes(searchTerm) ||
+        (patient.Email_c || patient.email).toLowerCase().includes(searchTerm.toLowerCase())
       )
       setFilteredPatients(filtered)
     }
@@ -99,35 +98,42 @@ const PatientList = ({ onSelectPatient, onAddPatient }) => {
                     <ApperIcon name="User" className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-slate-900">{patient.name}</h3>
+<h3 className="text-lg font-semibold text-slate-900">{patient.Name_c || patient.name}</h3>
                     <div className="flex items-center space-x-4 text-sm text-slate-600">
                       <span className="flex items-center">
                         <ApperIcon name="Calendar" className="w-4 h-4 mr-1" />
-                        {format(new Date(patient.dateOfBirth), "MMM dd, yyyy")}
+{format(new Date(patient.DateOfBirth_c || patient.dateOfBirth), "MMM dd, yyyy")}
                       </span>
                       <span className="flex items-center">
-                        <ApperIcon name="Phone" className="w-4 h-4 mr-1" />
-                        {patient.phone}
+<ApperIcon name="Phone" className="w-4 h-4 mr-1" />
+                        {patient.Phone_c || patient.phone}
                       </span>
-                      <span className="flex items-center">
+<span className="flex items-center">
                         <ApperIcon name="Mail" className="w-4 h-4 mr-1" />
-                        {patient.email}
+                        {patient.Email_c || patient.email}
                       </span>
                     </div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-sm font-medium text-slate-700">Blood Type</p>
-                  <p className="text-lg font-bold text-rose-600">{patient.bloodType}</p>
+                
+                <div className="flex items-center justify-between">
+                  <div className="text-center">
+                    <p className="text-sm font-medium text-slate-700">Blood Type</p>
+                    <p className="text-lg font-bold text-rose-600">{patient.BloodType_c || patient.bloodType}</p>
+                  </div>
                 </div>
-              </div>
-              
-              {patient.allergies.length > 0 && (
+                
+              {(patient.Allergies_c || patient.allergies) && (patient.Allergies_c || patient.allergies).length > 0 && (
                 <div className="mt-4 pt-4 border-t border-slate-200">
                   <div className="flex items-center space-x-2">
                     <ApperIcon name="AlertTriangle" className="w-4 h-4 text-amber-500" />
                     <span className="text-sm font-medium text-slate-700">Allergies:</span>
-                    <span className="text-sm text-slate-600">{patient.allergies.join(", ")}</span>
+                    <span className="text-sm text-slate-600">
+                      {Array.isArray(patient.Allergies_c || patient.allergies) 
+                        ? (patient.Allergies_c || patient.allergies).join(", ")
+                        : (patient.Allergies_c || patient.allergies)
+                      }
+                    </span>
                   </div>
                 </div>
               )}

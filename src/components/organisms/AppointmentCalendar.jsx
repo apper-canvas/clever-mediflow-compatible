@@ -42,14 +42,14 @@ const AppointmentCalendar = ({ onAddAppointment, onEditAppointment }) => {
   const startDate = startOfWeek(monthStart)
   const endDate = endOfWeek(monthEnd)
 
-  const getPatientName = (patientId) => {
+const getPatientName = (patientId) => {
     const patient = patients.find(p => p.Id === parseInt(patientId))
-    return patient ? patient.name : "Unknown Patient"
+    return patient ? (patient.Name_c || patient.name) : "Unknown Patient"
   }
 
   const getAppointmentsForDay = (day) => {
-    return appointments.filter(appointment => 
-      isSameDay(new Date(appointment.dateTime), day)
+return appointments.filter(appointment => 
+      isSameDay(new Date(appointment.DateTime_c || appointment.dateTime), day)
     )
   }
 
@@ -100,12 +100,12 @@ const AppointmentCalendar = ({ onAddAppointment, onEditAppointment }) => {
                 onClick={() => onEditAppointment(appointment)}
                 className="cursor-pointer p-1.5 rounded text-xs bg-gradient-to-r from-primary-100 to-secondary-100 border border-primary-200 hover:shadow-md transition-all duration-200"
               >
-                <div className="font-medium text-primary-800 truncate">
-                  {format(new Date(appointment.dateTime), "HH:mm")} - {getPatientName(appointment.patientId)}
+<div className="font-medium text-primary-800 truncate">
+                  {format(new Date(appointment.DateTime_c || appointment.dateTime), "HH:mm")} - {getPatientName(appointment.PatientId_c || appointment.patientId)}
                 </div>
                 <div className="flex items-center justify-between mt-1">
-                  <span className="text-primary-600 truncate">{appointment.type}</span>
-                  <StatusIndicator status={appointment.status} showIcon={false} />
+                  <span className="text-primary-600 truncate">{appointment.Type_c || appointment.type}</span>
+                  <StatusIndicator status={appointment.Status_c || appointment.status} showIcon={false} />
                 </div>
               </div>
             ))}
@@ -165,9 +165,9 @@ const AppointmentCalendar = ({ onAddAppointment, onEditAppointment }) => {
           <p className="text-slate-500 py-4">No appointments scheduled for today</p>
         ) : (
           <div className="space-y-3">
-            {appointments
-              .filter(apt => isSameDay(new Date(apt.dateTime), new Date()))
-              .sort((a, b) => new Date(a.dateTime) - new Date(b.dateTime))
+{appointments
+              .filter(apt => isSameDay(new Date(apt.DateTime_c || apt.dateTime), new Date()))
+              .sort((a, b) => new Date(a.DateTime_c || a.dateTime) - new Date(b.DateTime_c || b.dateTime))
               .map((appointment) => (
                 <div
                   key={appointment.Id}
@@ -178,14 +178,14 @@ const AppointmentCalendar = ({ onAddAppointment, onEditAppointment }) => {
                     <div className="w-2 h-2 rounded-full bg-gradient-to-r from-primary-500 to-secondary-500"></div>
                     <div>
                       <p className="font-medium text-slate-900">
-                        {getPatientName(appointment.patientId)}
+                        {getPatientName(appointment.PatientId_c || appointment.patientId)}
                       </p>
                       <p className="text-sm text-slate-600">
-                        {format(new Date(appointment.dateTime), "h:mm a")} - {appointment.type}
+                        {format(new Date(appointment.DateTime_c || appointment.dateTime), "h:mm a")} - {appointment.Type_c || appointment.type}
                       </p>
                     </div>
                   </div>
-                  <StatusIndicator status={appointment.status} />
+                  <StatusIndicator status={appointment.Status_c || appointment.status} />
                 </div>
               ))}
           </div>

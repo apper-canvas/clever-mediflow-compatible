@@ -42,16 +42,15 @@ const Dashboard = () => {
   if (loading) return <Loading />
   if (error) return <Error message={error} onRetry={loadDashboardData} />
 
-  const todayAppointments = data.appointments.filter(apt => 
-    isToday(new Date(apt.dateTime))
+const todayAppointments = data.appointments.filter(apt => 
+    isToday(new Date(apt.DateTime_c || apt.dateTime))
   )
 
-  const occupiedBeds = data.beds.filter(bed => bed.status === "occupied").length
+  const occupiedBeds = data.beds.filter(bed => (bed.Status_c || bed.status) === "occupied").length
   const totalBeds = data.beds.length
   const occupancyRate = totalBeds > 0 ? Math.round((occupiedBeds / totalBeds) * 100) : 0
 
-  const availableBeds = data.beds.filter(bed => bed.status === "available").length
-
+  const availableBeds = data.beds.filter(bed => (bed.Status_c || bed.status) === "available").length
   // Chart data for bed occupancy trends
   const chartOptions = {
     chart: {
@@ -84,10 +83,10 @@ const Dashboard = () => {
   }
 
   const chartSeries = [
-    data.beds.filter(bed => bed.status === "available").length,
-    data.beds.filter(bed => bed.status === "occupied").length,
-    data.beds.filter(bed => bed.status === "cleaning").length,
-    data.beds.filter(bed => bed.status === "maintenance").length
+data.beds.filter(bed => (bed.Status_c || bed.status) === "available").length,
+    data.beds.filter(bed => (bed.Status_c || bed.status) === "occupied").length,
+    data.beds.filter(bed => (bed.Status_c || bed.status) === "cleaning").length,
+    data.beds.filter(bed => (bed.Status_c || bed.status) === "maintenance").length
   ]
 
   return (
@@ -157,10 +156,10 @@ const Dashboard = () => {
                 <p>No appointments scheduled for today</p>
               </div>
             ) : (
-              todayAppointments
-                .sort((a, b) => new Date(a.dateTime) - new Date(b.dateTime))
+todayAppointments
+                .sort((a, b) => new Date(a.DateTime_c || a.dateTime) - new Date(b.DateTime_c || b.dateTime))
                 .map((appointment) => {
-                  const patient = data.patients.find(p => p.Id === parseInt(appointment.patientId))
+                  const patient = data.patients.find(p => p.Id === parseInt(appointment.PatientId_c || appointment.patientId))
                   return (
                     <div
                       key={appointment.Id}
@@ -170,21 +169,21 @@ const Dashboard = () => {
                         <div className="w-2 h-2 rounded-full bg-gradient-to-r from-primary-500 to-secondary-500"></div>
                         <div>
                           <p className="font-medium text-slate-900">
-                            {patient?.name || "Unknown Patient"}
+                            {patient?.Name_c || patient?.name || "Unknown Patient"}
                           </p>
                           <p className="text-sm text-slate-600">
-                            {format(new Date(appointment.dateTime), "h:mm a")} - {appointment.type}
+                            {format(new Date(appointment.DateTime_c || appointment.dateTime), "h:mm a")} - {appointment.Type_c || appointment.type}
                           </p>
                         </div>
                       </div>
                       <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        appointment.status === "scheduled" 
+                        (appointment.Status_c || appointment.status) === "scheduled" 
                           ? "bg-blue-100 text-blue-800" 
-                          : appointment.status === "completed"
+                          : (appointment.Status_c || appointment.status) === "completed"
                           ? "bg-emerald-100 text-emerald-800"
                           : "bg-rose-100 text-rose-800"
                       }`}>
-                        {appointment.status}
+                        {appointment.Status_c || appointment.status}
                       </div>
                     </div>
                   )

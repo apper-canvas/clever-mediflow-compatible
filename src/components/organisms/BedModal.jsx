@@ -11,8 +11,8 @@ import { format } from "date-fns";
 
 const BedModal = ({ bed, onClose }) => {
   const [patients, setPatients] = useState([])
-  const [selectedPatientId, setSelectedPatientId] = useState(bed?.patientId || "")
-  const [newStatus, setNewStatus] = useState(bed?.status || "available")
+const [selectedPatientId, setSelectedPatientId] = useState(bed?.PatientId_c || bed?.patientId || "")
+  const [newStatus, setNewStatus] = useState(bed?.Status_c || bed?.status || "available")
   const [loading, setLoading] = useState(false)
   const [loadingPatients, setLoadingPatients] = useState(true)
 
@@ -32,30 +32,28 @@ const BedModal = ({ bed, onClose }) => {
     }
   }
 
-  const getPatientName = (patientId) => {
+const getPatientName = (patientId) => {
     if (!patientId) return null
     const patient = patients.find(p => p.Id === parseInt(patientId))
-    return patient ? patient.name : "Unknown Patient"
+    return patient ? (patient.Name_c || patient.name) : "Unknown Patient"
   }
 
   const handleUpdateBed = async () => {
     try {
       setLoading(true)
-      
-      const updateData = {
-        ...bed,
+const updateData = {
         status: newStatus,
         patientId: newStatus === "occupied" ? parseInt(selectedPatientId) || null : null,
-        admissionDate: newStatus === "occupied" && !bed.patientId ? new Date().toISOString() : bed.admissionDate,
+        admissionDate: newStatus === "occupied" && !(bed.PatientId_c || bed.patientId) ? new Date().toISOString() : (bed.AdmissionDate_c || bed.admissionDate),
         expectedDischarge: newStatus === "occupied" ? new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString() : null
       }
 
       await bedService.update(bed.Id, updateData)
       
-      let message = "Bed updated successfully"
-      if (newStatus === "occupied" && !bed.patientId) {
+let message = "Bed updated successfully"
+      if (newStatus === "occupied" && !(bed.PatientId_c || bed.patientId)) {
         message = "Patient admitted successfully"
-      } else if (newStatus === "available" && bed.patientId) {
+      } else if (newStatus === "available" && (bed.PatientId_c || bed.patientId)) {
         message = "Patient discharged successfully"
       }
       
@@ -69,7 +67,7 @@ const BedModal = ({ bed, onClose }) => {
   }
 
 const availablePatients = patients.filter(patient => 
-    patient.Id === parseInt(bed?.patientId) || 
+    patient.Id === parseInt(bed?.PatientId_c || bed?.patientId) || 
     !patient.currentBedId
   )
 
@@ -79,7 +77,7 @@ const availablePatients = patients.filter(patient =>
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-semibold text-slate-900 flex items-center">
             <ApperIcon name="Bed" className="w-6 h-6 mr-2" />
-            Bed {bed?.bedNumber}
+Bed {bed?.BedNumber_c || bed?.bedNumber}
           </h3>
           <Button variant="ghost" onClick={onClose} className="p-2">
             <ApperIcon name="X" className="w-5 h-5" />
@@ -89,20 +87,20 @@ const availablePatients = patients.filter(patient =>
         <div className="space-y-4">
           <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
             <span className="text-sm font-medium text-slate-700">Current Status:</span>
-            <StatusIndicator status={bed?.status} />
+<StatusIndicator status={bed?.Status_c || bed?.status} />
           </div>
 
-          {bed?.patientId && (
+          {(bed?.PatientId_c || bed?.patientId) && (
             <div className="p-3 bg-primary-50 rounded-lg border border-primary-200">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-r from-primary-500 to-secondary-600 flex items-center justify-center">
                   <ApperIcon name="User" className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <p className="font-medium text-slate-900">{getPatientName(bed.patientId)}</p>
-                  {bed.admissionDate && (
+                  <p className="font-medium text-slate-900">{getPatientName(bed.PatientId_c || bed.patientId)}</p>
+                  {(bed.AdmissionDate_c || bed.admissionDate) && (
                     <p className="text-xs text-slate-600">
-                      Admitted: {format(new Date(bed.admissionDate), "MMM dd, yyyy")}
+                      Admitted: {format(new Date(bed.AdmissionDate_c || bed.admissionDate), "MMM dd, yyyy")}
                     </p>
                   )}
                 </div>
@@ -130,8 +128,8 @@ const availablePatients = patients.filter(patient =>
                 disabled={loadingPatients}
               >
                 <option value="">Select patient</option>
-                {availablePatients.map(patient => (
-                  <option key={patient.Id} value={patient.Id}>{patient.name}</option>
+{availablePatients.map(patient => (
+                  <option key={patient.Id} value={patient.Id}>{patient.Name_c || patient.name}</option>
                 ))}
               </Select>
               {newStatus === "occupied" && !selectedPatientId && (
