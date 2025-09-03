@@ -123,7 +123,7 @@ const filtered = patients.filter(patient =>
                   </div>
                 </div>
                 
-                {(patient.Allergies_c || patient.allergies) && (patient.Allergies_c || patient.allergies).length > 0 && (
+{(patient.Allergies_c || patient.allergies) && (patient.Allergies_c || patient.allergies).length > 0 && (
                   <div className="mt-4 pt-4 border-t border-slate-200">
                     <div className="flex items-center space-x-2">
                       <ApperIcon name="AlertTriangle" className="w-4 h-4 text-amber-500" />
@@ -136,14 +136,14 @@ const filtered = patients.filter(patient =>
                       </span>
                     </div>
                   </div>
-</div>
                 )}
               </div>
             </div>
           ))}
         </div>
-      )}
+)}
     </div>
+  )
 }
 
 export default PatientList
