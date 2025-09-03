@@ -116,33 +116,34 @@ const filtered = patients.filter(patient =>
                   </div>
                 </div>
                 
-                <div className="flex items-center justify-between">
+<div className="flex items-center justify-between">
                   <div className="text-center">
                     <p className="text-sm font-medium text-slate-700">Blood Type</p>
                     <p className="text-lg font-bold text-rose-600">{patient.BloodType_c || patient.bloodType}</p>
                   </div>
                 </div>
                 
-              {(patient.Allergies_c || patient.allergies) && (patient.Allergies_c || patient.allergies).length > 0 && (
-                <div className="mt-4 pt-4 border-t border-slate-200">
-                  <div className="flex items-center space-x-2">
-                    <ApperIcon name="AlertTriangle" className="w-4 h-4 text-amber-500" />
-                    <span className="text-sm font-medium text-slate-700">Allergies:</span>
-                    <span className="text-sm text-slate-600">
-                      {Array.isArray(patient.Allergies_c || patient.allergies) 
-                        ? (patient.Allergies_c || patient.allergies).join(", ")
-                        : (patient.Allergies_c || patient.allergies)
-                      }
-                    </span>
+                {(patient.Allergies_c || patient.allergies) && (patient.Allergies_c || patient.allergies).length > 0 && (
+                  <div className="mt-4 pt-4 border-t border-slate-200">
+                    <div className="flex items-center space-x-2">
+                      <ApperIcon name="AlertTriangle" className="w-4 h-4 text-amber-500" />
+                      <span className="text-sm font-medium text-slate-700">Allergies:</span>
+                      <span className="text-sm text-slate-600">
+                        {Array.isArray(patient.Allergies_c || patient.allergies) 
+                          ? (patient.Allergies_c || patient.allergies).join(", ")
+                          : (patient.Allergies_c || patient.allergies)
+                        }
+                      </span>
+                    </div>
                   </div>
-                </div>
-              )}
+</div>
+                )}
+              </div>
             </div>
           ))}
         </div>
       )}
     </div>
-  )
 }
 
 export default PatientList
